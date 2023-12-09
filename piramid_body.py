@@ -42,5 +42,4 @@ def piramid_body(base, top, height):
     edges += [[i, i+4] for i in range(4)]
 
 
-    return vertices, edges
-
+    return np.array(vertices).transpose(), edges

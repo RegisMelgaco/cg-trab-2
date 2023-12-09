@@ -1,4 +1,4 @@
-
+import numpy as np
 import math
 
 
@@ -23,5 +23,5 @@ def cilinder(radius, circle_count, circle_res):
     # conectar verticalmente os circulos
     edges += [[i*circle_res, (i+1)*circle_res] for i in range(circle_count-1)]
 
-    return vertices, edges
+    return np.array(vertices).transpose(), edges
 

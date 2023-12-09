@@ -1,3 +1,4 @@
+import numpy as np
 import math
 
 
@@ -22,4 +23,4 @@ def cone(radius, circle_count, circle_res):
     vertices += [[0, 0, height, 1]]
     edges += [[i*circle_res, (i+1)*circle_res] for i in range(circle_count)]
 
-    return vertices, edges
+    return np.array(vertices).transpose(), edges

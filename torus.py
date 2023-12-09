@@ -32,4 +32,4 @@ def torus(radius, r, circle_count, circle_res):
         edges += [[j+(circle_res*i), j+(circle_res*(i+1))] for j in range(1, circle_res)]
 
 
-    return vertices, edges
+    return np.array(vertices).transpose(), edges
