@@ -42,6 +42,9 @@ class World:
                 v2 = vs[e[1]]
 
                 subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], [v1[2], v2[2]], color=obj.color)
+        
+        center = [0,0,0,1]
+        subplot.scatter(center[0], center[1], center[2], color='orange')
 
         plt.grid(True)
         plt.axis('equal')
@@ -77,6 +80,9 @@ class World:
                 v2 = vs[e[1]]
 
                 subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], [v1[2], v2[2]], color=obj.color)
+        
+        center = np.matmul(t, np.array([[0,0,0,1]]).transpose()).transpose()[0]
+        subplot.scatter(center[0], center[1], center[2], color='orange')
 
         plt.grid(True)
         plt.axis('equal')
