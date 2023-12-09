@@ -16,7 +16,8 @@ def cilinder(radius, circle_count, circle_res):
         vertices += [
             [math.sin(s) * radius,
              math.cos(s) * radius,
-             h*i
+             h*i,
+             1
              ] for s in steps]
     
     # conectar verticalmente os circulos

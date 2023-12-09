@@ -15,10 +15,11 @@ def cone(radius, circle_count, circle_res):
         vertices += [
             [math.sin(s) * (radius - (r*i)),
              math.cos(s) * (radius - (r*i)),
-             h*i
+             h*i,
+             1
              ] for s in steps]
     
-    vertices += [[0, 0, height]]
+    vertices += [[0, 0, height, 1]]
     edges += [[i*circle_res, (i+1)*circle_res] for i in range(circle_count)]
 
     return vertices, edges

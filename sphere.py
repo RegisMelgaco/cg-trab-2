@@ -13,10 +13,16 @@ def sphere(radius, circle_count, circle_res):
             [math.sin(s) * radius,
              0,
              math.cos(s) * radius,
-             ] for s in steps])
+             1] for s in steps])
         
         c = math.pi/circle_count
-        vs = np.matmul(vs, np.array([[math.cos(i*c),-math.sin(i*c),0],[math.sin(i*c),math.cos(i*c),0],[0,0,1]]))
+        t = np.array([
+            [math.cos(i*c), -math.sin(i*c), 0, 0],
+            [math.sin(i*c), math.cos(i*c), 0, 0],
+            [0,0,1,0],
+            [0,0,0,1],
+            ])
+        vs = np.matmul(t, vs.transpose()).transpose()
         
         vertices += vs.tolist()
     

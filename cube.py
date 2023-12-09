@@ -13,11 +13,13 @@ def cube(side):
         [0, 1, 1, 1],
         [1, 1, 1, 1],
         [1, 0, 1, 1]]).transpose()
+    
     t = np.array([
         [side, 0, 0, 0],
         [0, side, 0, 0],
         [0, 0, side, 0],
         [0, 0, 0, 1]])
+    
     vertices += np.matmul(t, v).transpose().tolist()
 
     edges += [[i, i+1] for i in range(3)] # conectando base

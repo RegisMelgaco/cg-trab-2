@@ -5,9 +5,18 @@ def piramid_body(base, top, height):
     vertices, edges = [], []
 
     # base
-    v = np.array([[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]])
-    t = np.array([[base, 0, 0], [0, base, 0], [0, 0, 1]])
-    vertices += np.matmul(v, t).tolist()
+    vs = np.array([
+        [0, 0, 0, 1],
+        [0, 1, 0, 1],
+        [1, 1, 0, 1],
+        [1, 0, 0, 1]])
+    t = np.array([
+        [base, 0, 0, 0],
+        [0, base, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+    ])
+    vertices += np.matmul(t, vs.transpose()).transpose().tolist()
 
     edges += [[i, i+1] for i in range(3)]
     edges += [[0, 3]]
