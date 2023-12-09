@@ -134,8 +134,7 @@ v = np.divide(v, np.linalg.norm(v))
 
 print(f'n={n};\nu={u};\nv={v};')
 
-subplot.quiver(camera[0], camera[1], camera[2], n[0], n[1], n[2])
-# subplot.arrow(camera, n, color='red')
+subplot.quiver(camera[0], camera[1], camera[2], n[0], n[1], n[2], color='black')
 
 # V = np.matrix([
 #     [u[0], u[1], u[2], - camera[0] * u[0] - camera[1] * u[1] - camera[2] * u[2]],
