@@ -76,9 +76,6 @@ def average_vectors(vectors):
 # X,Y = np.meshgrid(x,y)
 # Z=0*X
 
-# subplot.plot_surface(X, Y, Z)
-
-# vectors, edges, colors, centers = [], [], [], []
 objects = []
 centers = []
 
@@ -116,26 +113,43 @@ centers.append(average_vectors(vs))
 objects.append(Object(vs, es, 'pink'))
 
 center = average_vectors(np.array(centers).transpose())
-camera = [-5,-5, 9, 1]
 
-
-n = np.array(center[:3]) - np.array(camera[:3])
-n = np.divide(n, np.linalg.norm(n))
+center = center[:3]
+camera = np.array([-5,-5, 9])
 
 up = [0,0,1]
 
-fig = plt.figure()
-subplot = fig.add_subplot(111, projection='3d')
+n = (center - camera) / np.linalg.norm(center - camera)
 
-subplot.plot([camera[0], center[0]], [camera[1], center[1]], [camera[2], center[2]], color='orange')
+u = up - ((up * n * n) / (n * n))
+
+v = n * u
+
+print(n, u, v)
+
+print(np.dot(n, v))
+
+t = np.array([
+    [u[0], u[1], u[2], - camera[0]],
+    [v[0], v[1], v[2], - camera[1]],
+    [n[0], n[1], n[2], - camera[2]],
+    [0, 0, 0, 1]
+])
+
+print(t)
+
+fig = plt.figure()
+subplot = fig.add_subplot()
 
 for obj in objects:
     for e in obj.edges:
-        vs = obj.vectors.transpose()
+        vs = np.matmul(t, obj.vectors)
+        vs = vs.transpose()
         v1 = vs[e[0]]
         v2 = vs[e[1]]
+        
+        subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], color=obj.color)
 
-        subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], [v1[2], v2[2]], color=obj.color)
 
 plt.grid(True)
 plt.axis('equal')

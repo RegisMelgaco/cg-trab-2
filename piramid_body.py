@@ -1,8 +1,9 @@
 import numpy as np
+from object import Object
 
 
 def piramid_body(base, top, height):
-    vertices, edges = [], []
+    vectors, edges = [], []
 
     # base
     vs = np.array([
@@ -16,7 +17,7 @@ def piramid_body(base, top, height):
         [0, 0, 1, 0],
         [0, 0, 0, 1],
     ])
-    vertices += np.matmul(t, vs.transpose()).transpose().tolist()
+    vectors += np.matmul(t, vs.transpose()).transpose().tolist()
 
     edges += [[i, i+1] for i in range(3)]
     edges += [[0, 3]]
@@ -33,7 +34,7 @@ def piramid_body(base, top, height):
         [0, top, 0, offset],
         [0, 0, height, 0],
         [0, 0, 0, 1]])
-    vertices += np.matmul(t, v).transpose().tolist()
+    vectors += np.matmul(t, v).transpose().tolist()
 
     edges += [[i, i+1] for i in range(4, 7)]
     edges += [[4, 7]]
@@ -42,4 +43,4 @@ def piramid_body(base, top, height):
     edges += [[i, i+4] for i in range(4)]
 
 
-    return np.array(vertices).transpose(), edges
+    return Object(np.array(vectors).transpose(), edges, 'yellow')

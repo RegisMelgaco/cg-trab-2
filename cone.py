@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from object import Object
 
 
 def cone(radius, circle_count, circle_res):
@@ -23,4 +24,4 @@ def cone(radius, circle_count, circle_res):
     vertices += [[0, 0, height, 1]]
     edges += [[i*circle_res, (i+1)*circle_res] for i in range(circle_count)]
 
-    return np.array(vertices).transpose(), edges
+    return Object(np.array(vertices).transpose(), edges, 'green')

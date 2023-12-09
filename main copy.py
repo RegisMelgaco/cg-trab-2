@@ -82,56 +82,67 @@ def average_vectors(vectors):
 objects = []
 centers = []
 
-vs, es = cone(2, 4, 8)
-vs = rotate_xz(vs, math.pi/2)
-vs = move(vs, (-7, 7, 0))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'blue'))
+obj = cone(2, 4, 8)
+obj.rotate_xz(math.pi/2)
+obj.move((-7, 7, 0))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
-vs, es = piramid_body(4, 2, 2)
-vs = rotate_xy(vs, math.pi)
-vs = move(vs, (-1, 1, 0))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'red'))
+obj = piramid_body(4, 2, 2)
+obj.rotate_xy(math.pi)
+obj.move((-1, 1, 0))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
-vs, es = torus(4, 2, 8, 8)
-vs = move(vs, (-7, 7, 7))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'green'))
+obj = torus(4, 2, 8, 8)
+obj.move((-7, 7, 7))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
-vs, es = sphere(2, 8, 8)
-vs = move(vs, (3, 5, 2))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'yellow'))
+obj = sphere(2, 8, 8)
+obj.move((3, 5, 2))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
-vs, es = cilinder(2, 3, 8)
-vs = move(vs, (7, 3, 0))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'cyan'))
+obj = cilinder(2, 3, 8)
+obj.move((7, 3, 0))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
-vs, es = cube(5)
-vs = scale(vs, (.9, .9, .9))
-vs = move(vs, (6, 6, 0))
-centers.append(average_vectors(vs))
-objects.append(Object(vs, es, 'pink'))
+obj = cube(5)
+obj.scale((.9, .9, .9))
+obj.move((6, 6, 0))
+centers.append(average_vectors(obj.vectors))
+objects.append(obj)
 
 center = average_vectors(np.array(centers).transpose())
-camera = [-5,-5, 9, 1]
+center = center[:3]
+camera = np.array([-5,-5, 9])
 
+up = [1,0,0]
 
-n = np.array(center[:3]) - np.array(camera[:3])
-n = np.divide(n, np.linalg.norm(n))
+n = (center - camera) / np.linalg.norm(center - camera)
+print(np.linalg.norm(n))
 
-up = [0,0,1]
+u = up - ((np.dot(up, n) / np.linalg.norm(n) ** 2) * n)
+
+v = np.cross(n, u)
+
+t = np.array([
+    [u[0], u[1], u[2], - camera[0]],
+    [v[0], v[1], v[2], - camera[1]],
+    [n[0], n[1], n[2], - camera[2]],
+    [0, 0, 0, 1]
+])
+
 
 fig = plt.figure()
 subplot = fig.add_subplot(111, projection='3d')
 
-subplot.plot([camera[0], center[0]], [camera[1], center[1]], [camera[2], center[2]], color='orange')
-
 for obj in objects:
     for e in obj.edges:
-        vs = obj.vectors.transpose()
+        vs = np.matmul(t, obj.vectors)
+        vs = vs.transpose()
         v1 = vs[e[0]]
         v2 = vs[e[1]]
 
