@@ -50,13 +50,12 @@ def rotate_xz(vectors, angle):
     return np.matmul(t, vectors)
 
 
-def add_object(word_vectors, word_edges, obj_vectors, obj_edges):
-    c = len(word_vectors.transpose())
-    for i in range(len(obj_edges)):
-        obj_edges[i][0] += c
-        obj_edges[i][1] += c
+class Object:
+    def __init__(self, vectors, edges, color):
+        self.vectors = vectors
+        self.edges = edges
+        self.color = color
 
-    return np.array(word_vectors.transpose().tolist() + obj_vectors.transpose().tolist()).transpose(), word_edges + obj_edges
 
 def average_vectors(vectors):
     vs = vectors.transpose()
@@ -82,40 +81,42 @@ subplot = fig.add_subplot(111, projection='3d')
 
 # subplot.plot_surface(X, Y, Z)
 
-vectors, edges, centers = np.array([]), [], []
+# vectors, edges, colors, centers = [], [], [], []
+objects = []
+centers = []
 
 vs, es = cone(2, 4, 8)
 vs = rotate_xz(vs, math.pi/2)
 vs = move(vs, (-7, 7, 0))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'blue'))
 
 vs, es = piramid_body(4, 2, 2)
 vs = rotate_xy(vs, math.pi)
 vs = move(vs, (-1, 1, 0))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'red'))
 
 vs, es = torus(4, 2, 8, 8)
 vs = move(vs, (-7, 7, 7))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'green'))
 
 vs, es = sphere(2, 8, 8)
 vs = move(vs, (3, 5, 2))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'yellow'))
 
 vs, es = cilinder(2, 3, 8)
 vs = move(vs, (7, 3, 0))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'cyan'))
 
 vs, es = cube(5)
 vs = scale(vs, (.9, .9, .9))
 vs = move(vs, (6, 6, 0))
 centers.append(average_vectors(vs))
-vectors, edges = add_object(vectors, edges, vs, es)
+objects.append(Object(vs, es, 'pink'))
 
 center = average_vectors(np.array(centers).transpose())
 camera = [-5,-5, 9]
@@ -145,13 +146,13 @@ subplot.quiver(camera[0], camera[1], camera[2], n[0], n[1], n[2])
 
 # vectors = np.matmul(V, np.array(vectors).transpose()).transpose()
 
-vectors = vectors.transpose()
+for obj in objects:
+    for e in obj.edges:
+        vs = obj.vectors.transpose()
+        v1 = vs[e[0]]
+        v2 = vs[e[1]]
 
-for e in edges:
-    v1 = vectors[e[0]]
-    v2 = vectors[e[1]]
-
-    subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], [v1[2], v2[2]], color='blue')
+        subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], [v1[2], v2[2]], color=obj.color)
 
 
 plt.grid(True)
