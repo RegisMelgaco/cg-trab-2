@@ -65,6 +65,7 @@ class World:
 
         v = np.cross(n, u)
 
+        # transformação em rotação unido com translação
         t = np.array([
             [u[0], u[1], u[2], - self.eye[0]],
             [v[0], v[1], v[2], - self.eye[1]],
@@ -86,6 +87,57 @@ class World:
 
         plt.grid(True)
         plt.axis('equal')
+        plt.show()
+
+
+    # fovy: angulo de abertura vertical da projeção da câmera
+    # aspect: razão entre largura e altura da projeção
+    # near: distancia para o plano de projeção mais próximo da câmera
+    # far: distancia para o plano de projeção mais distante da câmera
+    def plot_eye_projection(self, fovy, aspect, near, far):
+        centers = [average_vectors(obj.vectors) for obj in self.objects]
+        at = average_vectors(np.array(centers).transpose())[:3]
+
+        up = [0,-1,0]
+
+        n = (at - self.eye) / np.linalg.norm(at - self.eye)
+
+        u = up - ((np.dot(up, n) / np.linalg.norm(n) ** 2) * n)
+
+        v = np.cross(n, u)
+
+        t1 = np.array([
+            [u[0], u[1], u[2], - self.eye[0]],
+            [v[0], v[1], v[2], - self.eye[1]],
+            [n[0], n[1], n[2], - self.eye[2]],
+            [0, 0, 0, 1]
+        ])
+
+        top = near * math.tan(fovy)
+        right = top * aspect
+
+        t2 = np.array([
+            [near/right, 0, 0, 0],
+            [0, near/top, 0, 0],
+            [0, 0, -(far+near)/(far-near), (-2*far*near)/(far-near)],
+            [0, 0, -1, 0],
+        ])
+
+        t = np.matmul(t1,t2)
+
+        fig = plt.figure()
+        subplot = fig.add_subplot()
+
+        for obj in self.objects:
+            for e in obj.edges:
+                vs = np.matmul(t, obj.vectors).transpose()
+                v1 = vs[e[0]]
+                v2 = vs[e[1]]
+
+                subplot.plot([v1[0], v2[0]], [v1[1], v2[1]], color=obj.color)
+
+        plt.grid(True)
+        plt.axis('square')
         plt.show()
 
 
@@ -119,7 +171,8 @@ if __name__ == '__main__':
     obj.move((6, 6, 0))
     w.objects.append(obj)
 
-    w.eye = np.array([-5,-5, 9])
+    w.eye = np.array([-2,-2, -7])
 
     w.plot_world_sys()
     w.plot_camera_sys()
+    w.plot_eye_projection(math.pi/3, .25, 1, 2)
